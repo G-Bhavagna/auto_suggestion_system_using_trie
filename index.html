@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Suggestion GUI</title>
+
+    <!-- Add Poppins font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #39297b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        form input {
+            width: 100%;
+            height: 60px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #fff;
+            font-size: 18px;
+            padding: 0 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        #suggestionList {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            position: absolute;
+            background-color: #434989;
+            border-radius: 8px;
+            z-index: 1;
+            max-height: 200px;
+            overflow-y: auto;
+            top: 100%; /* Position below the input */
+        }
+
+        #suggestionList li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #suggestionList li:hover {
+            background-color: #5762a3;
+        }
+
+        form button {
+            width: 100%;
+            height: 60px;
+            background: #ff3929;
+            color: #fff;
+            font-size: 18px;
+            border: 0;
+            outline: 0;
+            border-radius: 8px;
+            cursor: not-allowed; /* Set cursor to not-allowed */
+        }
+
+        ::placeholder {
+            color: #fff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Search Suggestion GUI</h1>
+<form th:action="@{/search}" method="post">
+    <input type="text" id="searchInput" oninput="getSuggestions()" placeholder="Type Something to get suggestion...">
+    <!-- Suggestion list -->
+    <ul id="suggestionList"></ul>
+    <button type="submit" disabled>Submit</button>
+</form>
+
+<script>
+    function getSuggestions() {
+        var inputElement = document.getElementById("searchInput");
+        var inputValue = inputElement.value;
+
+        // Check if there is input in the search box
+        if (inputValue.trim() !== "") {
+            // Make an asynchronous request to your backend
+            fetch('/getSuggestions?prefix=' + inputValue)
+                .then(response => response.json())
+                .then(data => {
+                    updateSuggestionList(data);
+                });
+        } else {
+            // If no input, clear the suggestion list
+            updateSuggestionList([]);
+        }
+    }
+
+    function updateSuggestionList(suggestions) {
+        var suggestionListElement = document.getElementById("suggestionList");
+
+        // Remove previous suggestions
+        while (suggestionListElement.firstChild) {
+            suggestionListElement.removeChild(suggestionListElement.firstChild);
+        }
+
+        // Update the suggestion list with received suggestions
+        if (suggestions.length > 0) {
+            suggestions.forEach(function (suggestion) {
+                var listItem = document.createElement("li");
+                listItem.appendChild(document.createTextNode(suggestion));
+                suggestionListElement.appendChild(listItem);
+            });
+        } else {
+            // Handle case where no suggestions are available
+            var noSuggestionItem = document.createElement("li");
+            noSuggestionItem.appendChild(document.createTextNode(""));
+            suggestionListElement.appendChild(noSuggestionItem);
+        }
+    }
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Suggestion GUI</title>
+
+    <!-- Add Poppins font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #39297b;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        form {
+            width: 80%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        form input {
+            width: 100%;
+            height: 60px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: #fff;
+            font-size: 18px;
+            padding: 0 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        #suggestionList {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            position: absolute;
+            background-color: #434989;
+            border-radius: 8px;
+            z-index: 1;
+            max-height: 200px;
+            overflow-y: auto;
+            top: 100%; /* Position below the input */
+        }
+
+        #suggestionList li {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        #suggestionList li:hover {
+            background-color: #5762a3;
+        }
+
+        form button {
+            width: 100%;
+            height: 60px;
+            background: #ff3929;
+            color: #fff;
+            font-size: 18px;
+            border: 0;
+            outline: 0;
+            border-radius: 8px;
+            cursor: not-allowed; /* Set cursor to not-allowed */
+        }
+
+        ::placeholder {
+            color: #fff;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Search Suggestion GUI</h1>
+<form th:action="@{/search}" method="post">
+    <input type="text" id="searchInput" oninput="getSuggestions()" placeholder="Type Something to get suggestion...">
+    <!-- Suggestion list -->
+    <ul id="suggestionList"></ul>
+    <button type="submit" disabled>Submit</button>
+</form>
+
+<script>
+    function getSuggestions() {
+        var inputElement = document.getElementById("searchInput");
+        var inputValue = inputElement.value;
+
+        // Check if there is input in the search box
+        if (inputValue.trim() !== "") {
+            // Make an asynchronous request to your backend
+            fetch('/getSuggestions?prefix=' + inputValue)
+                .then(response => response.json())
+                .then(data => {
+                    updateSuggestionList(data);
+                });
+        } else {
+            // If no input, clear the suggestion list
+            updateSuggestionList([]);
+        }
+    }
+
+    function updateSuggestionList(suggestions) {
+        var suggestionListElement = document.getElementById("suggestionList");
+
+        // Remove previous suggestions
+        while (suggestionListElement.firstChild) {
+            suggestionListElement.removeChild(suggestionListElement.firstChild);
+        }
+
+        // Update the suggestion list with received suggestions
+        if (suggestions.length > 0) {
+            suggestions.forEach(function (suggestion) {
+                var listItem = document.createElement("li");
+                listItem.appendChild(document.createTextNode(suggestion));
+                suggestionListElement.appendChild(listItem);
+            });
+        } else {
+            // Handle case where no suggestions are available
+            var noSuggestionItem = document.createElement("li");
+            noSuggestionItem.appendChild(document.createTextNode(""));
+            suggestionListElement.appendChild(noSuggestionItem);
+        }
+    }
+</script>
+
+</body>
+</html>
